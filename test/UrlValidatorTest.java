@@ -12,9 +12,75 @@ public class UrlValidatorTest extends TestCase {
    public void testManualTest()
    {
       //You can use this function to implement your manual testing
+      String[] valschemes = { "http", "https", "ftp" }; //Valid schemes
+      UrlValidator validator = new UrlValidator(valschemes);
+      assertTrue(validator.isValid("https://www.amazon.com"));
+      assertTrue(validator.isValid("https://www.google.com"));
+      assertTrue(validator.isValid("https://www.youtube.com"));
+      assertTrue(validator.isValid("https://www.reddit.com"));
+      assertTrue(validator.isValid("http://www.amazon.com"));
+      assertTrue(validator.isValid("http://www.google.com"));
+      assertTrue(validator.isValid("http://www.youtube.com"));
+      assertTrue(validator.isValid("http://www.reddit.com"));
+      assertTrue(validator.isValid("ftp://www.amazon.com"));
+      assertTrue(validator.isValid("ftp://www.google.com"));
+      assertTrue(validator.isValid("ftp://www.youtube.com"));
+      assertTrue(validator.isValid("ftp://www.reddit.com"));
+
+      validator = new UrlValidator(validSchemes);//manually write in invalid schemes
+      assertFalse(validator.isValid("htttp://www.amazon.com"));
+      assertFalse(validator.isValid("htttp://www.google.com"));
+      assertFalse(validator.isValid("htttp://www.youtube.com"));
+      assertFalse(validator.isValid("htttp://www.reddit.com"));
+      assertFalse(validator.isValid("fpt://www.amazon.com"));
+      assertFalse(validator.isValid("fpt://www.google.com"));
+      assertFalse(validator.isValid("fpt://www.youtube.com"));
+      assertFalse(validator.isValid("fpt://www.reddit.com"));
+      assertFalse(validator.isValid("...://www.amazon.com"));
+      assertFalse(validator.isValid("...://www.google.com"));
+      assertFalse(validator.isValid("...://www.youtube.com"));
+      assertFalse(validator.isValid("...://www.reddit.com"));
+      assertFalse(validator.isValid("ptth//www.amazon.com"));
+      assertFalse(validator.isValid("ptth//www.google.com"));
+      assertFalse(validator.isValid("ptth//www.youtube.com"));
+      assertFalse(validator.isValid("ptth//www.reddit.com"));
 
 
+      //manually testing valid and invalid authorities
+      validator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+      assertTrue(validator.isValid("http://www.reddit.com"));
+      assertTrue(validator.isValid("http://www.amazon.com"));
+      assertTrue(validator.isValid("ftp://www.google.com"));
+      assertTrue(validator.isValid("ftp://www.youtube.com"));
+      assertFalse(validator.isValid("https://www.!!33ra&*.com"));
+      assertFalse(validator.isValid("https://#&^$&.com"));
+      assertFalse(validator.isValid("ftp://www.g00gle./com"));
 
+
+      //manually testing valid and invalid ports
+      validator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+      assertTrue(validator.isValid("http://www.reddit.com:80"));
+      assertTrue(validator.isValid("http://www.amazon.com:"));
+      assertTrue(validator.isValid("ftp://www.google.com:1000"));
+      assertFalse(validator.isValid("ftp://www.youtube.com:10abc/test"));
+      assertFalse(validator.isValid("https://www.reddit.com:65a"));
+      assertFalse(validator.isValid("https://www.amazon.com:x3"));
+
+      //manually testing valid and invalid paths
+      validator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+      assertTrue(validator.isValid("https://www.amazon.com/test"));
+      assertTrue(validator.isValid("https://www.google.com/test34234"));
+      assertFalse(validator.isValid("https://www.youtube.com/../"));
+      assertFalse(validator.isValid("https://www.reddit.com/test/@.\\@/badpath"));
+
+      //manually testing valid and invalid queries
+      validator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
+      assertTrue(validator.isValid("https://www.amazon.com:80/test?name=test"));
+      assertTrue(validator.isValid("https://www.google.com/test?valid"));
+      assertTrue(validator.isValid("https://www.youtube.com/testing?morevalid34234"));
+      assertTrue(validator.isValid("https://www.reddit.com:80/test/anotherfolder?thequery"));
+      assertFalse(validator.isValid("httpf://wwasdfasdf:80/thetest?is=invalid"));
+      assertFalse(validator.isValid("httpf://googs:84234a/thetest?is=?=invalid[]"));
    }
 
    /**
